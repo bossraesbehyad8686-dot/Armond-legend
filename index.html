@@ -1,0 +1,233 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARMOND LEGEND | AL Season 01</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Tahoma, Arial, sans-serif;
+      background: #07110e;
+      color: #f5f5f5;
+    }
+    header {
+      padding: 28px 16px;
+      text-align: center;
+      background: linear-gradient(135deg, #123d2c, #07110e 75%);
+      border-bottom: 1px solid #c9a84c;
+    }
+    .logo {
+      color: #e6c568;
+      font-size: clamp(25px, 6vw, 42px);
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+    .subtitle { color: #b8c9bf; margin-top: 10px; }
+    main { max-width: 900px; margin: auto; padding: 22px 14px; }
+    .panel {
+      background: #101d18;
+      border: 1px solid #294438;
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    h2 { color: #e6c568; margin-top: 0; }
+    .pack {
+      max-width: 230px;
+      margin: 18px auto;
+      padding: 25px 12px;
+      text-align: center;
+      border: 2px solid #d9b64f;
+      border-radius: 16px;
+      background: linear-gradient(145deg, #1d553b, #101d18);
+      box-shadow: 0 0 24px #c9a84c20;
+    }
+    .pack-icon { font-size: 65px; }
+    .pack-name { font-size: 20px; font-weight: bold; color: #f3d77c; }
+    button {
+      border: 0;
+      border-radius: 11px;
+      padding: 13px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      background: #e3bf5c;
+      color: #102017;
+    }
+    button:active { transform: scale(.98); }
+    .center { text-align: center; }
+    .note { color: #b8c9bf; font-size: 13px; line-height: 1.8; }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+      gap: 14px;
+    }
+    .player-card {
+      border-radius: 15px;
+      padding: 15px 10px;
+      text-align: center;
+      background: linear-gradient(160deg, #26382e, #111a15);
+      border: 2px solid #82918a;
+      animation: appear .35s ease-out;
+    }
+    .player-card.RARE { border-color: #53a8ff; }
+    .player-card.LEGENDARY {
+      border-color: #f5d46d;
+      background: linear-gradient(160deg, #5b4520, #18180f);
+      box-shadow: 0 0 18px #f5d46d35;
+    }
+    .rating { font-size: 30px; font-weight: 900; color: #f5d46d; }
+    .player-icon { font-size: 42px; margin: 8px; }
+    .rarity { font-size: 12px; margin-top: 8px; }
+    .COMMON .rarity { color: #c4d0c9; }
+    .RARE .rarity { color: #72baff; }
+    .LEGENDARY .rarity { color: #f5d46d; }
+    .collection-card {
+      background: #14241c;
+      border: 1px solid #34503f;
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+    }
+    .empty { color: #9aada2; text-align: center; padding: 20px; }
+    footer { text-align: center; padding: 25px; color: #81958a; font-size: 12px; }
+    @keyframes appear {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">⚽ ARMOND LEGEND</div>
+    <div class="subtitle">AL Season 01 · Football Card Collection</div>
+  </header>
+
+  <main>
+    <section class="panel center">
+      <h2>🎁 پک بازیکنان</h2>
+      <p>هر پک شامل دو کارت فوتبالی است!</p>
+      <div class="pack">
+        <div class="pack-icon">🏆</div>
+        <div class="pack-name">LEGEND PACK</div>
+        <p class="note">دو شانس برای پیدا کردن یک اسطوره</p>
+      </div>
+      <button id="openPack">باز کردن پک ⚡</button>
+      <p class="note">شانس کارت‌ها: معمولی ۷۰٪ · کمیاب ۲۵٪ · افسانه‌ای ۵٪</p>
+      <p class="note">این نسخهٔ آزمایشی است؛ پک‌ها فعلاً رایگان‌اند.</p>
+    </section>
+
+    <section class="panel">
+      <h2>✨ کارت‌های پک تو</h2>
+      <div id="results" class="cards">
+        <div class="empty">پک را باز کن تا کارت‌ها اینجا نمایش داده شوند!</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>📚 کلکسیون من</h2>
+      <p class="note">کارت‌هایی که در همین مرورگر به دست آورده‌ای:</p>
+      <div id="collection" class="cards"></div>
+      <p id="collectionCount" class="note center">تعداد کارت‌ها: ۰</p>
+      <button id="reset" style="background:#26382e;color:white;">پاک کردن کلکسیون آزمایشی</button>
+    </section>
+  </main>
+
+  <footer>ARMOND LEGEND © AL Season 01 · Fan-made football card game</footer>
+
+  <script>
+    const players = [
+      { name: "مهدی طارمی", rating: 87, position: "ST", icon: "🇮🇷", rarity: "LEGENDARY" },
+      { name: "کریستیانو رونالدو", rating: 91, position: "ST", icon: "🐐", rarity: "LEGENDARY" },
+      { name: "لیونل مسی", rating: 92, position: "RW", icon: "🐐", rarity: "LEGENDARY" },
+      { name: "کیلیان امباپه", rating: 90, position: "ST", icon: "⚡", rarity: "RARE" },
+      { name: "ارلینگ هالند", rating: 90, position: "ST", icon: "💥", rarity: "RARE" },
+      { name: "کوین دی‌بروینه", rating: 89, position: "CM", icon: "🎯", rarity: "RARE" },
+      { name: "کای هاورتز", rating: 84, position: "CF", icon: "🇩🇪", rarity: "COMMON" },
+      { name: "وینیسیوس جونیور", rating: 88, position: "LW", icon: "🇧🇷", rarity: "RARE" },
+      { name: "محمد صلاح", rating: 88, position: "RW", icon: "🇪🇬", rarity: "RARE" },
+      { name: "هری کین", rating: 87, position: "ST", icon: "🏴", rarity: "COMMON" },
+      { name: "سون هیونگ مین", rating: 86, position: "LW", icon: "🇰🇷", rarity: "COMMON" },
+      { name: "جود بلینگام", rating: 89, position: "CM", icon: "🏴", rarity: "RARE" },
+      { name: "علیرضا بیرانوند", rating: 83, position: "GK", icon: "🧤", rarity: "COMMON" },
+      { name: "سردار آزمون", rating: 85, position: "ST", icon: "🇮🇷", rarity: "COMMON" }
+    ];
+
+    const rarityNames = {
+      COMMON: "معمولی",
+      RARE: "کمیاب",
+      LEGENDARY: "افسانه‌ای"
+    };
+
+    function drawPlayer() {
+      const roll = Math.random() * 100;
+      let rarity = roll < 5 ? "LEGENDARY" : roll < 30 ? "RARE" : "COMMON";
+      const pool = players.filter(p => p.rarity === rarity);
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    function makeCard(player) {
+      const card = document.createElement("div");
+      card.className = "player-card " + player.rarity;
+      card.innerHTML = `
+        <div class="rating">${player.rating}</div>
+        <div>${player.position}</div>
+        <div class="player-icon">${player.icon}</div>
+        <strong>${player.name}</strong>
+        <div class="rarity">${rarityNames[player.rarity]}</div>
+      `;
+      return card;
+    }
+
+    function getCollection() {
+      try {
+        return JSON.parse(localStorage.getItem("armondCollection") || "[]");
+      } catch {
+        return [];
+      }
+    }
+
+    function saveCollection(collection) {
+      localStorage.setItem("armondCollection", JSON.stringify(collection));
+    }
+
+    function renderCollection() {
+      const collection = getCollection();
+      const area = document.getElementById("collection");
+      area.innerHTML = "";
+      if (!collection.length) {
+        area.innerHTML = '<div class="empty">هنوز کارتی نداری. اولین پک را باز کن!</div>';
+      } else {
+        collection.slice().reverse().forEach(player => {
+          area.appendChild(makeCard(player));
+        });
+      }
+      document.getElementById("collectionCount").textContent =
+        "تعداد کارت‌ها: " + collection.length;
+    }
+
+    document.getElementById("openPack").addEventListener("click", () => {
+      const pulled = [drawPlayer(), drawPlayer()];
+      const results = document.getElementById("results");
+      results.innerHTML = "";
+      pulled.forEach(player => results.appendChild(makeCard(player)));
+      saveCollection(getCollection().concat(pulled));
+      renderCollection();
+    });
+
+    document.getElementById("reset").addEventListener("click", () => {
+      if (confirm("کلکسیون آزمایشی این مرورگر پاک شود؟")) {
+        localStorage.removeItem("armondCollection");
+        renderCollection();
+        document.getElementById("results").innerHTML =
+          '<div class="empty">کلکسیون پاک شد. می‌توانی پک جدید باز کنی.</div>';
+      }
+    });
+
+    renderCollection();
+  </script>
+</body>
+</html>
